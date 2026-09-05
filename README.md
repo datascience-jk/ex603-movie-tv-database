@@ -1,9 +1,9 @@
 # ex603-movie-tv-database
 
-Name: Jonathan Kahng
-Purpose: Repository to be used for EX 603 Data and Algorithms for Scalable Systems (Fall 2026)
-Theme: Movies / TV
-What This System Does: TBD
+Name: Jonathan Kahng  
+Purpose: Repository to be used for EX 603 Data and Algorithms for Scalable Systems (Fall 2026)  
+Theme: Movies / TV  
+What This System Does: TBD  
 
 
 1. Project title and one-line summary — what system you modelled, in a sentence.
