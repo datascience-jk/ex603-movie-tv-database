@@ -1,0 +1,57 @@
+
+
+Table users {
+  user_id integer [pk]
+  user_display_name varchar(50)
+  joined_at timestamp
+  last_active timestamp
+  is_active bool
+}
+
+Table ratings {
+  rating_id integer [pk]
+  user_id integer [not null]
+  movie_id integer [not null]
+  score smallint 
+  posted_at timestamp
+}
+
+Table movies {
+  movie_id integer [pk]
+  movie_title varchar(200)
+  runtime_minutes integer
+  release_date date 
+  is_active bool
+}
+
+Table movie_genres {
+  movie_id integer [not null]
+  genre_id integer [not null]
+
+  indexes {
+    (movie_id, genre_id) [pk]
+  }
+}
+
+Table genres {
+  genre_id integer [pk]
+  genre_name varchar(50)
+}
+
+
+
+Ref rates: ratings.user_id > users.user_id // many-to-one
+
+Ref receives: movies.movie_id < ratings.movie_id // one-to-many
+
+Ref tagged: movies.movie_id < movie_genres.movie_id
+
+Ref applied: genres.genre_id < movie_genres.genre_id
+
+Records users(user_id, user_display_name, joined_at, last_active, is_active) {
+
+}
+
+Records ratings(rating_id, user_id, movie_id, score, posted_at) {
+
+}
