@@ -1,27 +1,25 @@
-
-
 Table users {
   user_id integer [pk]
-  user_display_name varchar(50)
-  joined_at timestamp
+  user_display_name varchar(50) [not null, unique]
+  joined_at timestamp [not null, default: `now()`]
   last_active timestamp
-  is_active bool
+  is_active bool [not null, default: true]
 }
 
 Table ratings {
   rating_id integer [pk]
-  user_id integer [not null]
+  user_id integer [note: 'nullable; SET NULL on user delete']
   movie_id integer [not null]
-  score smallint 
-  posted_at timestamp
+  score smallint [not null, note: 'CHECK (score BETWEEN 0 AND 10)']
+  posted_at timestamp [not null, default: `now()`]
 }
 
 Table movies {
   movie_id integer [pk]
-  movie_title varchar(200)
-  runtime_minutes integer
-  release_date date 
-  is_active bool
+  movie_title varchar(200) [not null]
+  runtime_minutes integer [note: 'CHECK (runtime_minutes > 0)']
+  release_date date
+  is_active bool [not null, default: true]
 }
 
 Table movie_genres {
@@ -35,23 +33,13 @@ Table movie_genres {
 
 Table genres {
   genre_id integer [pk]
-  genre_name varchar(50)
+  genre_name varchar(50) [not null, unique]
 }
 
+Ref rates: ratings.user_id > users.user_id [delete: set null]
 
+Ref receives: movies.movie_id < ratings.movie_id [delete: cascade]
 
-Ref rates: ratings.user_id > users.user_id // many-to-one
+Ref tagged: movies.movie_id < movie_genres.movie_id [delete: cascade]
 
-Ref receives: movies.movie_id < ratings.movie_id // one-to-many
-
-Ref tagged: movies.movie_id < movie_genres.movie_id
-
-Ref applied: genres.genre_id < movie_genres.genre_id
-
-Records users(user_id, user_display_name, joined_at, last_active, is_active) {
-
-}
-
-Records ratings(rating_id, user_id, movie_id, score, posted_at) {
-
-}
+Ref applied: genres.genre_id < movie_genres.genre_id [delete: cascade]
