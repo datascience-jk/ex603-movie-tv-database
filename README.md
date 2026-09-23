@@ -3,7 +3,7 @@
 Name: Jonathan Kahng  
 Purpose: Repository to be used for EX 603 Data and Algorithms for Scalable Systems (Fall 2026)  
 Theme: Movies / TV  
-What This System Does: TBD  
+What This System Does: Stores and Aggregates Ratings of Movies and TV Shows
 
 
 # Reelist
