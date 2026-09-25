@@ -40,3 +40,39 @@ Editable source: [`schema/erd.dbml`](schema/erd.dbml)
 | `queries/` | One subfolder per unit (`unit3`–`unit6`), holding that assignment's `.sql` files |
 | `analysis/` | Written notes and reflections, one markdown file per unit |
 | `screenshots/` | Execution evidence, named to map to the task it supports |
+
+
+
+
+---
+
+## Schema
+
+The schema is built by [`schema/schema.sql`](schema/schema.sql), a single PostgreSQL 14+ script that creates all five tables from an empty database. It begins with a reset block, so it can be re-run without manual cleanup:
+
+    psql -d reelist -f schema/schema.sql
+
+### Tables
+
+Listed in creation order. A table is created only after every table it references.
+
+| # | Table | Role | References |
+|---|---|---|---|
+| 1 | `users` | Dimension: everyone who rates | — |
+| 2 | `movies` | Dimension: the catalog being rated | — |
+| 3 | `ratings` | Fact table: one score per user per movie | `users`, `movies` |
+| 4 | `genres` | Dimension: genre labels, with subgenres | itself |
+| 5 | `movie_genres` | Junction: many-to-many between movies and genres | `movies`, `genres` |
+
+### Design decisions worth noticing
+
+- **Deleting a person keeps their ratings; deleting a movie removes them.** `ratings.user_id` uses `ON DELETE SET NULL`, so account deletion severs attribution but leaves the score in every average. `ratings.movie_id` uses `ON DELETE CASCADE`, because a score for a movie that no longer exists means nothing. Routine delisting doesn't delete anything: it sets `movies.is_active` to false.
+- **One rating per user per movie.** `UNIQUE (user_id, movie_id)` enforces it. The pair can't be the primary key, because `user_id` becomes NULL after account deletion, so `ratings` uses a surrogate `rating_id`.
+- **Half-star scores, stored exactly.** `score` is `NUMERIC(3,2)`, bounded to 0.5–5.0 and restricted to half steps by two CHECK constraints. NUMERIC keeps averages free of floating-point error.
+- **Subgenres through a self-referencing key.** `genres.parent_genre_id` points to another genre (Slasher → Horror). Deleting a parent promotes its subgenres to top level instead of deleting them.
+- **A composite key on the junction.** `movie_genres` uses `(movie_id, genre_id)` as its primary key, so the same tag can't be recorded twice.
+- **Case-insensitive email uniqueness.** A unique index on `LOWER(email_address)` treats `Jon@` and `jon@` as the same address, and a CHECK rejects malformed addresses.
+- **Derived values aren't stored.** A user's last activity (`MAX(ratings.posted_at)`) and a title's release status (`release_date` compared with today) are computed at query time, so they can't drift out of sync.
+- **Every constraint is named** (`pk_`, `fk_`, `uq_`, `chk_`), so violations identify themselves in error messages.
+
+Full justifications for every key and constraint: [`schema/constraints.md`](schema/constraints.md). Column-level definitions: [`schema/schema-definition.md`](schema/schema-definition.md).
