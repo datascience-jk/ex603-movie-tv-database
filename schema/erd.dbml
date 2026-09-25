@@ -1,8 +1,16 @@
 Table users {
   user_id integer [pk]
   user_display_name varchar(50) [not null, unique]
+  email_address varchar(254) [not null, note: 'unique on LOWER(email_address); format CHECK']
   joined_at timestamp [not null, default: `now()`]
-  email_address varchar(254) [not null]
+  is_active bool [not null, default: true]
+}
+
+Table movies {
+  movie_id integer [pk]
+  movie_title varchar(200) [not null]
+  runtime_minutes integer [note: 'CHECK (runtime_minutes > 0)']
+  release_date date [note: 'CHECK (release_date >= 1888-01-01)']
   is_active bool [not null, default: true]
 }
 
@@ -10,39 +18,34 @@ Table ratings {
   rating_id integer [pk]
   user_id integer [note: 'nullable; SET NULL on user delete']
   movie_id integer [not null]
-  score numeric(3,2) [not null, note: '0.5 AND 5.0, half-steps']
+  score numeric(3,2) [not null, note: 'CHECK 0.5 to 5.0, half steps']
   posted_at timestamp [not null, default: `now()`]
-  indexes { 
-    (user_id, movie_id) [unique] 
-  }
-}
-
-Table movies {
-  movie_id integer [pk]
-  movie_title varchar(200) [not null]
-  runtime_minutes integer [note: 'CHECK (runtime_minutes > 0)']
-  release_date date [note: >= 1888-01-01]
-  is_active bool [not null, default: true]
-}
-
-Table movie_genres {
-  movie_id integer [not null]
-  genre_id integer [not null]
-  Ref subgenre_of: genres.parent_genre_id > genres.genre_id [delete: set null]
 
   indexes {
-    (movie_id, genre_id) [pk]
+    (user_id, movie_id) [unique]
   }
 }
 
 Table genres {
   genre_id integer [pk]
   genre_name varchar(50) [not null, unique]
+  parent_genre_id integer [note: 'self-reference for subgenres; NULL = top level']
+}
+
+Table movie_genres {
+  movie_id integer [not null]
+  genre_id integer [not null]
+
+  indexes {
+    (movie_id, genre_id) [pk]
+  }
 }
 
 Ref posts: ratings.user_id > users.user_id [delete: set null]
 
 Ref receives: movies.movie_id < ratings.movie_id [delete: cascade]
+
+Ref subgenre_of: genres.parent_genre_id > genres.genre_id [delete: set null]
 
 Ref tagged: movies.movie_id < movie_genres.movie_id [delete: cascade]
 
