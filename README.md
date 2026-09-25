@@ -37,7 +37,7 @@ Editable source: [`schema/erd.dbml`](schema/erd.dbml)
 | Path | Contents |
 |---|---|
 | `schema/` | DDL script, ERD image and source, relation schemas, constraint justifications |
-| `queries/` | One subfolder per unit (`unit3`–`unit6`), holding that assignment's `.sql` files |
+| `queries/` | One subfolder per unit (`unit1`–`unit6`), holding that assignment's `.sql` files |
 | `analysis/` | Written notes and reflections, one markdown file per unit |
 | `screenshots/` | Execution evidence, named to map to the task it supports |
 
