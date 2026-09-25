@@ -10,7 +10,7 @@ The actor role. Record of every user on Reelist, active and inactive.
 | user_id | INTEGER | Surrogate key, auto-generated |
 | user_display_name | VARCHAR(50) | User-generated display name to be displayed across the platform, e.g. "User_123" |
 | joined_at | TIMESTAMP | When user joined Reelist |
-| email_address | VARCHAR(254) | Email uses to sign up |
+| email_address | VARCHAR(254) | Email used to sign up |
 | is_active | BOOLEAN | True = Customer has not deactivated the account; this is set to true by default for every new entry. False = User has deactivated account |
 
 **Primary key:** `user_id`
