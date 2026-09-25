@@ -53,7 +53,7 @@ The catalog role. Classifies titles into named categories.
 |---|---|---|
 | genre_id | INTEGER | Surrogate key, auto-generated |
 | genre_name | VARCHAR(50) | Genre label, e.g. "Thriller" |
-| parent_genre_id | VARCHAR(50) | Self-referencing foreign key, NULL for top-level genres |
+| parent_genre_id | INTEGER | Self-referencing foreign key, NULL for top-level genres |
 
 
 **Primary key:** `genre_id`
