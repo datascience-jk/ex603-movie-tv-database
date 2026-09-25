@@ -10,7 +10,7 @@ The actor role. Record of every user on Reelist, active and inactive.
 | user_id | INTEGER | Surrogate key, auto-generated |
 | user_display_name | VARCHAR(50) | User-generated display name to be displayed across the platform, e.g. "User_123" |
 | joined_at | TIMESTAMP | When user joined Reelist |
-| last_active | TIMESTAMP | When the user last logged into Reelist |
+| email_address | VARCHAR(254) | Email uses to sign up |
 | is_active | BOOLEAN | True = Customer has not deactivated the account; this is set to true by default for every new entry. False = User has deactivated account |
 
 **Primary key:** `user_id`
@@ -40,10 +40,10 @@ The event role. Records each rating a user places on a movie.
 | rating_id | INTEGER | Surrogate key, auto-generated |
 | user_id | INTEGER | Foreign Key to "users" |
 | movie_id | INTEGER | Foreign Key to "movies" |
-| score | SMALLINT | 0–10, displayed to users as 0–5 stars, half-star increments |
+| score | NUMERIC(3,2) | 0.5–5.0 in half steps, displayed to users as 0.5–5 stars, half-star increments |
 | posted_at | TIMESTAMP | When user placed the rating|
 
-**Primary key:** `ratings_id`
+**Primary key:** `rating_id`
 
 ## genres
 
@@ -53,6 +53,8 @@ The catalog role. Classifies titles into named categories.
 |---|---|---|
 | genre_id | INTEGER | Surrogate key, auto-generated |
 | genre_name | VARCHAR(50) | Genre label, e.g. "Thriller" |
+| parent_genre_id | VARCHAR(50) | Self-referencing foreign key, NULL for top-level genres |
+
 
 **Primary key:** `genre_id`
 
